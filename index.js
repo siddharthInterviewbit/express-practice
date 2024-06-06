@@ -3,6 +3,10 @@ const express = require('express');
 // create an express application 
 
 const app = express();
+// app.use(middleware2);
+
+app.use(logger);
+
 
 app.use(express.json());
 // learn about app.use method 
@@ -39,6 +43,41 @@ app.post('/courses', (req, res) => {
   courses.push(course);
   res.send(courses);
 })
+
+app.put('/course/:id', (req, res) => {
+  try {
+    let singleCourse = courses.find((course) => {
+      return course.id === +req.params.id
+    })
+  
+    if (!singleCourse) {
+      res.status(404).send('course does not exist');
+    }
+  
+    singleCourse.name = req.body.name;
+    res.send(courses);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+})
+
+// function middleware1(req, res, next) {
+//   console.log("hi");
+//   next();
+// }
+
+// function middleware2(req, res, next) {
+//   console.log("middleware2");
+//   next();
+// }
+
+// method, ip hostname, curret time
+
+function logger(req, res, next) {
+  console.log(req.method, req.ip, req.hostname, new Date());
+  next();
+}
+
 
 // app.put()
 
